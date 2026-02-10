@@ -1,0 +1,5 @@
+/* MUI handles all styling via ThemeProvider + CssBaseline */
+a {
+  color: inherit;
+  text-decoration: none;
+}
