@@ -56,12 +56,6 @@ export default function DocumentUpload({ onUpload }: DocumentUploadProps) {
         throw new Error(uploadError.message);
       }
 
-      setProgress(70);
-
-      const { data: urlData } = supabase.storage
-        .from('hoa-documents')
-        .getPublicUrl(filePath);
-
       setProgress(85);
 
       const { error: insertError } = await supabase.from('documents').insert({
@@ -70,9 +64,7 @@ export default function DocumentUpload({ onUpload }: DocumentUploadProps) {
         category,
         file_name: file.name,
         file_path: filePath,
-        file_url: urlData.publicUrl,
         file_size: file.size,
-        content_type: file.type,
       });
 
       if (insertError) {

@@ -39,10 +39,12 @@ export async function POST(request: NextRequest) {
 
     const recipients = residents ?? [];
 
+    // Send notifications via n8n workflow
+    let n8nResult = null;
     const webhookUrl = process.env.N8N_NOTIFICATION_WEBHOOK_URL;
     if (webhookUrl) {
       try {
-        await fetch(webhookUrl, {
+        const webhookResponse = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -56,11 +58,18 @@ export async function POST(request: NextRequest) {
             })),
           }),
         });
+
+        if (webhookResponse.ok) {
+          n8nResult = await webhookResponse.json();
+        } else {
+          console.error('n8n webhook returned status:', webhookResponse.status);
+        }
       } catch (webhookErr) {
         console.error('n8n webhook error:', webhookErr);
       }
     }
 
+    // Record notification in Supabase
     const { error: insertError } = await supabase
       .from('notifications')
       .insert({
@@ -81,6 +90,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       recipient_count: recipients.length,
+      channel,
+      ...(n8nResult && {
+        emailsSent: n8nResult.emailsSent ?? 0,
+        emailsFailed: n8nResult.emailsFailed ?? 0,
+        smsSent: n8nResult.smsSent ?? 0,
+        smsFailed: n8nResult.smsFailed ?? 0,
+      }),
     });
   } catch (err) {
     console.error('Notification send error:', err);

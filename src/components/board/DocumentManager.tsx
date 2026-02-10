@@ -19,7 +19,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import DownloadOutlined from '@mui/icons-material/DownloadOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import { createClient } from '@/lib/supabase/client';
@@ -30,8 +29,11 @@ interface Document {
   category: string;
   file_name: string;
   file_path: string;
-  file_url: string;
   created_at: string;
+}
+
+function getDocUrl(filePath: string) {
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/hoa-documents/${filePath}`;
 }
 
 const categoryColorMap: Record<string, 'primary' | 'secondary' | 'info' | 'warning' | 'default'> = {
@@ -146,8 +148,8 @@ export default function DocumentManager({ refreshKey }: DocumentManagerProps) {
                 <TableCell align="right">
                   <IconButton
                     size="small"
-                    component={Link}
-                    href={doc.file_url}
+                    component="a"
+                    href={getDocUrl(doc.file_path)}
                     target="_blank"
                     rel="noopener noreferrer"
                     title="Download"

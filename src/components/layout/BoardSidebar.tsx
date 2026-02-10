@@ -17,6 +17,7 @@ import NotificationsOutlined from '@mui/icons-material/NotificationsOutlined';
 import PeopleOutlined from '@mui/icons-material/PeopleOutlined';
 import PaymentOutlined from '@mui/icons-material/PaymentOutlined';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import AssignmentOutlined from '@mui/icons-material/AssignmentOutlined';
 import LogoutOutlined from '@mui/icons-material/LogoutOutlined';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
@@ -31,6 +32,7 @@ const navItems = [
   { label: 'Residents', href: '/board/residents', icon: <PeopleOutlined /> },
   { label: 'Payments', href: '/board/payments', icon: <PaymentOutlined /> },
   { label: 'Documents', href: '/board/documents', icon: <DescriptionOutlined /> },
+  { label: 'Form Submissions', href: '/board/form-submissions', icon: <AssignmentOutlined /> },
 ];
 
 export default function BoardSidebar() {
